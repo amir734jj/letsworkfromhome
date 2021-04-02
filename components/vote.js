@@ -63,6 +63,17 @@ export default class Vote extends Component {
     const workingFromHome = this.state.results.filter((x) => x.answer);
     const workingFromOffice = this.state.results.filter((x) => !x.answer);
 
+    const counts = this.state.results.reduce((memo, result) => {
+      if (!memo[result.company]) {
+        memo[result.company] = {
+          home: 0,
+          office: 0
+        }
+      }
+      memo[result.company][result.answer ? 'home' : 'office']++
+      return memo
+    }, {})
+
     return (
       <Container fluid className="mt-5">
         <Row>
@@ -81,14 +92,16 @@ export default class Vote extends Component {
                 <thead>
                   <tr>
                     <th>Company</th>
-                    <th>Answer</th>
+                    <th>Prefer WFH</th>
+                    <th>Prefer Office</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {this.state.results.map((x, i) => (
-                    <tr key={i}>
-                      <td>{x.company}</td>
-                      <td>{x.answer ? "Prefer WFH" : "Prefer Office"}</td>
+                  {Object.keys(counts).map((company) => (
+                    <tr key={company}>
+                      <td>{company}</td>
+                      <td>{counts[company].home}</td>
+                      <td>{counts[company].office}</td>
                     </tr>
                   ))}
                 </tbody>
