@@ -10,9 +10,13 @@ import "react-select-search/style.css";
 
 const cookies = new Cookies();
 
-const OPTIONS = bigCompanies
+const OPTIONS = Array.from(new Set(bigCompanies
   .map(({ name }) => ({ name, value: name }))
-  .concat([{ name: "Other", value: "Other " }]);
+  .concat([
+    { name: "Amazon.com", value: "Amazon.com" },
+    { name: "Netflix", value: "Netflix" },
+    { name: "Other", value: "Other " }
+  ])));
 
 export default class Vote extends Component {
   constructor(props) {
