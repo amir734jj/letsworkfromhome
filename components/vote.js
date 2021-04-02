@@ -4,7 +4,7 @@ import { PieChart } from "react-minimal-pie-chart";
 import bigCompanies from "big-companies";
 import Cookies from "universal-cookie";
 
-import { Button, Form, Container, Row, Col } from "react-bootstrap";
+import { Button, Form, Container, Row, Col, Table } from "react-bootstrap";
 
 import "react-select-search/style.css";
 
@@ -75,8 +75,25 @@ export default class Vote extends Component {
           </Col>
         </Row>
         <Row>
-          {voted ? null : (
-            <Col>
+          {voted ? (
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Company</th>
+                  <th>Answer</th>
+                </tr>
+              </thead>
+              <tbody>
+                {this.state.results.map((x, i) => (
+                  <tr key={i}>
+                    <td>{x.company}</td>
+                    <td>{x.answer ? "Prefer WFH" : "Prefer Office"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          ) : (
+            <Col sm={6}>
               <Form>
                 <Form.Group controlId="vote">
                   <Form.Label>Working preference</Form.Label>
@@ -114,7 +131,7 @@ export default class Vote extends Component {
               </Form>
             </Col>
           )}
-          <Col>
+          <Col sm={4}>
             {this.state.results.length ? (
               <PieChart
                 label={(props) => {
@@ -122,12 +139,12 @@ export default class Vote extends Component {
                 }}
                 data={[
                   {
-                    title: `WFH (${workingFromHome.length})`,
+                    title: `WFH`,
                     value: workingFromHome.length,
                     color: "lightgreen",
                   },
                   {
-                    title: `Office (${workingFromOffice.length})`,
+                    title: `Office`,
                     value: workingFromOffice.length,
                     color: "lightsalmon",
                   },
