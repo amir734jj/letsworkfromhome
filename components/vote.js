@@ -2,9 +2,13 @@ import React, { Component } from "react";
 import SelectSearch, { fuzzySearch } from "react-select-search";
 import { PieChart } from "react-minimal-pie-chart";
 import bigCompanies from "big-companies";
+import Cookies from "universal-cookie";
+
 import { Button, Form, Container, Row, Col } from "react-bootstrap";
 
 import "react-select-search/style.css";
+
+const cookies = new Cookies();
 
 const OPTIONS = bigCompanies
   .map(({ name }) => ({ name, value: name }))
@@ -45,13 +49,20 @@ export default class Vote extends Component {
       }),
     })
       .then((response) => response.json())
-      .then(this.statistics)
+      .then(() => {
+        this.statistics();
+        cookies.set("voted", true, { path: "/" });
+      })
       .catch(function (err) {
         console.log(err);
       });
   };
 
   render() {
+    const voted = cookies.get("voted") || false;
+    const workingFromHome = this.state.results.filter((x) => x.answer);
+    const workingFromOffice = this.state.results.filter((x) => !x.answer);
+
     return (
       <Container fluid className="mt-5">
         <Row>
@@ -64,43 +75,45 @@ export default class Vote extends Component {
           </Col>
         </Row>
         <Row>
-          <Col>
-            <Form>
-              <Form.Group controlId="vote">
-                <Form.Label>Working preference</Form.Label>
-                <Form.Check
-                  type="radio"
-                  id="yes"
-                  label="Continue to work from home"
-                  checked={this.state.vote}
-                  onChange={(e) => this.setState({ vote: true })}
-                />
-                <Form.Check
-                  type="radio"
-                  id="no"
-                  name="vote"
-                  label="Go back to the office"
-                  checked={!this.state.vote}
-                  onChange={(e) => this.setState({ vote: false })}
-                />
-              </Form.Group>
+          {voted ? null : (
+            <Col>
+              <Form>
+                <Form.Group controlId="vote">
+                  <Form.Label>Working preference</Form.Label>
+                  <Form.Check
+                    type="radio"
+                    id="yes"
+                    label="Continue to work from home"
+                    checked={this.state.vote}
+                    onChange={(e) => this.setState({ vote: true })}
+                  />
+                  <Form.Check
+                    type="radio"
+                    id="no"
+                    name="vote"
+                    label="Go back to the office"
+                    checked={!this.state.vote}
+                    onChange={(e) => this.setState({ vote: false })}
+                  />
+                </Form.Group>
 
-              <Form.Group controlId="company">
-                <Form.Label>Company name</Form.Label>
-                <SelectSearch
-                  name={this.state.company}
-                  value={this.state.company}
-                  options={OPTIONS}
-                  search
-                  filterOptions={fuzzySearch}
-                  placeholder="Select your company"
-                  onChange={(v) => this.setState({ company: v })}
-                />
-              </Form.Group>
+                <Form.Group controlId="company">
+                  <Form.Label>Company name</Form.Label>
+                  <SelectSearch
+                    name={this.state.company}
+                    value={this.state.company}
+                    options={OPTIONS}
+                    search
+                    filterOptions={fuzzySearch}
+                    placeholder="Select your company"
+                    onChange={(v) => this.setState({ company: v })}
+                  />
+                </Form.Group>
 
-              <Button onClick={this.submit}> Vote </Button>
-            </Form>
-          </Col>
+                <Button onClick={this.submit}> Vote </Button>
+              </Form>
+            </Col>
+          )}
           <Col>
             {this.state.results.length ? (
               <PieChart
@@ -109,13 +122,13 @@ export default class Vote extends Component {
                 }}
                 data={[
                   {
-                    title: "WFH",
-                    value: this.state.results.filter((x) => x.answer).length,
+                    title: `WFH (${workingFromHome.length})`,
+                    value: workingFromHome.length,
                     color: "lightgreen",
                   },
                   {
-                    title: "Office",
-                    value: this.state.results.filter((x) => !x.answer).length,
+                    title: `Office (${workingFromOffice.length})`,
+                    value: workingFromOffice.length,
                     color: "lightsalmon",
                   },
                 ]}
