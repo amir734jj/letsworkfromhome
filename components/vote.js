@@ -75,25 +75,25 @@ export default class Vote extends Component {
           </Col>
         </Row>
         <Row>
-          {voted ? (
-            <Table striped bordered hover>
-              <thead>
-                <tr>
-                  <th>Company</th>
-                  <th>Answer</th>
-                </tr>
-              </thead>
-              <tbody>
-                {this.state.results.map((x, i) => (
-                  <tr key={i}>
-                    <td>{x.company}</td>
-                    <td>{x.answer ? "Prefer WFH" : "Prefer Office"}</td>
+          <Col sm={6}>
+            {voted ? (
+              <Table striped bordered hover>
+                <thead>
+                  <tr>
+                    <th>Company</th>
+                    <th>Answer</th>
                   </tr>
-                ))}
-              </tbody>
-            </Table>
-          ) : (
-            <Col sm={6}>
+                </thead>
+                <tbody>
+                  {this.state.results.map((x, i) => (
+                    <tr key={i}>
+                      <td>{x.company}</td>
+                      <td>{x.answer ? "Prefer WFH" : "Prefer Office"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            ) : (
               <Form>
                 <Form.Group controlId="vote">
                   <Form.Label>Working preference</Form.Label>
@@ -129,8 +129,8 @@ export default class Vote extends Component {
 
                 <Button onClick={this.submit}> Vote </Button>
               </Form>
-            </Col>
-          )}
+            )}
+          </Col>
           <Col sm={4}>
             {this.state.results.length ? (
               <PieChart
