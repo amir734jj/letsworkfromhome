@@ -64,7 +64,7 @@ export default class Vote extends Component {
     const workingFromOffice = this.state.results.filter((x) => !x.answer);
 
     const counts = this.state.results.reduce((memo, result) => {
-      if (!memo[result]) {
+      if (!memo[result.company]) {
         memo[result.company] = {
           home: 0,
           office: 0
