@@ -69,7 +69,7 @@ export default class Vote extends Component {
           <Col>
             <h3>Do you prefer working from home after the pandemic</h3>
             <p>
-              As we are getting to the end of the pandemic, do you prefer
+              As we are getting close to the end of the pandemic, do you prefer
               working from home or you would like to get back to the office
             </p>
           </Col>
