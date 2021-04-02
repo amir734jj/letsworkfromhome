@@ -146,7 +146,8 @@ export default class Vote extends Component {
           </Col>
           <Col sm={4}>
             {this.state.results.length ? (
-              <PieChart
+              <div style={{ maxHeight: '25rem' }}>
+                <PieChart
                 label={(props) => {
                   return props.dataEntry.title;
                 }}
@@ -163,6 +164,7 @@ export default class Vote extends Component {
                   },
                 ]}
               />
+              </div>
             ) : null}
           </Col>
         </Row>
